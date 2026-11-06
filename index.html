@@ -1,0 +1,153 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Miau Shop</title>
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+<style>
+body {
+font-family: Arial, sans-serif;
+background: #f3f5ed;
+margin: 0;
+color: #333;
+}
+
+header {
+background: #556b2f;
+color: white;
+text-align: center;
+padding: 20px;
+}
+
+header h1 {
+margin: 0 0 8px;
+}
+
+main {
+max-width: 850px;
+margin: 25px auto;
+padding: 0 15px;
+}
+
+input {
+padding: 12px;
+width: 100%;
+box-sizing: border-box;
+border: 1px solid #ccc;
+border-radius: 6px;
+font-size: 16px;
+}
+
+.produtos {
+display: flex;
+flex-wrap: wrap;
+gap: 15px;
+margin-top: 20px;
+}
+
+.card {
+background: white;
+border: 1px solid #c5cfb5;
+border-radius: 10px;
+padding: 15px;
+width: 220px;
+text-align: center;
+}
+
+.foto {
+font-size: 55px;
+background: #e8eddf;
+border-radius: 8px;
+padding: 15px;
+}
+
+button {
+background: #556b2f;
+color: white;
+border: 0;
+border-radius: 6px;
+padding: 10px;
+cursor: pointer;
+}
+
+button:hover {
+background: #3d4f22;
+}
+</style>
+</head>
+
+<body>
+<div id="app">
+
+<header>
+<h1>🐱 Miau Shop</h1>
+<p>Produtos para gatos</p>
+<strong>🛒 Itens no carrinho: {{ carrinho }}</strong>
+</header>
+
+<main>
+<input v-model="busca" placeholder="Buscar produto...">
+
+<div class="produtos">
+<product-card
+v-for="produto in produtosFiltrados"
+:key="produto.nome"
+:nome="produto.nome"
+:preco="produto.preco"
+:imagem="produto.imagem"
+@adicionar="carrinho++">
+</product-card>
+</div>
+
+<p v-if="produtosFiltrados.length === 0">
+Nenhum produto encontrado.
+</p>
+</main>
+
+</div>
+
+<script>
+const app = Vue.createApp({
+data() {
+return {
+carrinho: 0,
+busca: '',
+produtos: [
+{ nome: 'Brinquedo de ratinho', preco: 'R$ 5,00', imagem: '🐭' },
+{ nome: 'Pote de ração', preco: 'R$ 5,00', imagem: '🥣' },
+{ nome: 'Caminha para gato', preco: 'R$ 25,00', imagem: '🛏️' }
+]
+};
+},
+
+computed: {
+produtosFiltrados() {
+return this.produtos.filter(produto =>
+produto.nome.toLowerCase().includes(this.busca.toLowerCase())
+);
+}
+}
+});
+
+app.component('product-card', {
+props: ['nome', 'preco', 'imagem'],
+
+template: `
+<div class="card">
+<div class="foto">{{ imagem }}</div>
+<h3>{{ nome }}</h3>
+<p>{{ preco }}</p>
+<button @click="$emit('adicionar')">
+Adicionar ao Carrinho
+</button>
+</div>
+`
+});
+
+app.mount('#app');
+</script>
+</body>
+</html>
